@@ -19,6 +19,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from loginapp.views import UserViewSet, LogInSet
 
+
 router1 = DefaultRouter()
 router1.register('Users', UserViewSet, basename='Users')
 

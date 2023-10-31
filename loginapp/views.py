@@ -2,6 +2,8 @@ from rest_framework.viewsets import ModelViewSet
 from .serializers import UserSerializer
 from .models import User
 from rest_framework.response import Response
+import jwt
+
 
 
 class UserViewSet(ModelViewSet):
@@ -25,8 +27,14 @@ class LogInSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
-            User.objects.get(first_name=request.data['first_name'],
-                             password=request.data['password'])
-            return Response('You are logged in', status=200)
-        except User.DoesNotExist:
-            return Response()
+            user = User.objects.get(first_name=request.data['first_name'],
+                                    password=request.data['password'])
+
+            payload_data = {'username:': user.first_name,
+                            'password:': user.password  }
+            token = jwt.encode(payload_data,
+                               'secret')
+            return Response(token)
+        except User.DoesNotExist: return Response({'Wrong info!'})
+
+
