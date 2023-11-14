@@ -16,15 +16,20 @@ class UserViewSet(ModelViewSet):
     def update(self, request, *args, **kwargs): return Response()
 
     def create(self, request, *args, **kwargs):
-        first_name = request.data['first_name']
-        last_name = request.data['last_name']
-        username = request.data['username']
-        password = make_password(request.data['password'])
-        User.objects.create(username=username,
-                            first_name=first_name,
-                            last_name=last_name,
-                            password=password)
-        return Response()
+        try:
+            user = User.objects.get(username=request.data['username'])
+            if user:
+                return Response('True')
+        except User.DoesNotExist:
+            first_name = request.data['first_name']
+            last_name = request.data['last_name']
+            username = request.data['username']
+            password = make_password(request.data['password'])
+            User.objects.create(username=username,
+                                first_name=first_name,
+                                last_name=last_name,
+                                password=password)
+            return Response('False')
 
 
 class LogInSet(ModelViewSet):
